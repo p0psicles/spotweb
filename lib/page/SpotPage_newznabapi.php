@@ -170,7 +170,8 @@ class SpotPage_newznabapi extends SpotPage_Abs {
 				return ;
 			} else {
                 // Complete season search, add wildcard character to season
-            	if (!empty($tvInfo->getTitle())) {
+            	$tvInfoTitle = $tvInfo->getTitle();
+                if (!empty($tvInfoTitle)) {
                 $seasonSearch .= '*';
                 // and search for the text 'Season ' ...
                 $searchParams['value'][] = "Titel:=:OR:+\"" . $tvInfo->getTitle() . "\" +\"Season " . (int) $this->_params['season'] . "\"";
@@ -182,7 +183,7 @@ class SpotPage_newznabapi extends SpotPage_Abs {
 			 *
 			 * We search both for S04E17 and S04 E17 (with a space)
 			 */
-            if (!empty($tvInfo->getTitle())) {
+            if (!empty($tvInfoTitle)) {
 				$searchParams['value'][] = "Titel:=:OR:+\"" . $tvInfo->getTitle() . "\" +" . $seasonSearch . $episodeSearch;
 	            if (!empty($episodeSearch)) {
 	                $searchParams['value'][] = "Titel:=:OR:+\"" . $tvInfo->getTitle() . "\" +" . $seasonSearch . ' +' . $episodeSearch;
