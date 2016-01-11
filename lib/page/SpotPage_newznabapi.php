@@ -152,44 +152,9 @@ class SpotPage_newznabapi extends SpotPage_Abs {
 				$this->showApiError(201);
 				return ;
 			} # if
+		}
 
-            /*
-             * And try to add an episode parameter, basically the same set of rules
-             * as for the season
-             */
-			if (preg_match('/^[eE][0-9]{1,2}$/', $this->_params['ep']) ||
-                preg_match('/^[0-9]{1,2}$/', $this->_params['ep']) ||
-                preg_match('/^[0-9]{1,2}\/[0-9]{1,2}$/', $this->_params['ep'])) {
-                    if (is_numeric($this->_params['ep'])) {
-                        $episodeSearch .= 'E' . str_pad($this->_params['ep'], 2, "0", STR_PAD_LEFT);
-                    } else {
-                        $episodeSearch .= $this->_params['ep'];
-                    } # else
-			} elseif ($this->_params['ep'] != "") {
-				$this->showApiError(201);
-				return ;
-			} else {
-                // Complete season search, add wildcard character to season
-            	$tvInfoTitle = $tvInfo->getTitle();
-                if (!empty($tvInfoTitle)) {
-                $seasonSearch .= '*';
-                // and search for the text 'Season ' ...
-                $searchParams['value'][] = "Titel:=:OR:+\"" . $tvInfo->getTitle() . "\" +\"Season " . (int) $this->_params['season'] . "\"";
-            	}
-            } # else
-
-			/*
-             * The + operator is supported both by PostgreSQL and MySQL's FTS
-			 *
-			 * We search both for S04E17 and S04 E17 (with a space)
-			 */
-            if (!empty($tvInfoTitle)) {
-				$searchParams['value'][] = "Titel:=:OR:+\"" . $tvInfo->getTitle() . "\" +" . $seasonSearch . $episodeSearch;
-	            if (!empty($episodeSearch)) {
-	                $searchParams['value'][] = "Titel:=:OR:+\"" . $tvInfo->getTitle() . "\" +" . $seasonSearch . ' +' . $episodeSearch;
-	            } # if
-            }
-		} elseif ($this->_params['t'] == "music") {
+		if ($this->_params['t'] == "music") {
 			if (empty($this->_params['artist']) && empty($this->_params['cat'])) {
 				$this->_params['cat'] = 3000;
 			} else {
@@ -480,6 +445,7 @@ class SpotPage_newznabapi extends SpotPage_Abs {
 					$attr->setAttribute('name', 'comments');
 					$attr->setAttribute('value', $spot['commentcount']);
 					$item->appendChild($attr);
+					
 				} # if
 			} # foreach
 
